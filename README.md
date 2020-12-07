@@ -9,4 +9,4 @@ The project can be built and run with Gradle. It is recommended to use Gradle 6.
 To build and run the project, `cd` into the project directory and execute `gradle run` command.
 
 To install Gradle, follow the instructions given [here](https://gradle.org/install/).
-On Windows, Gradle can also be installed with [Chocolatey](https://chocolatey.org/) with `choco install gradle` command.
+On Windows, Gradle can also be installed with [Chocolatey](https://chocolatey.org/) using `choco install gradle` command.
