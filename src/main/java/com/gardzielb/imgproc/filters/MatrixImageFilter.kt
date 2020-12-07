@@ -20,10 +20,9 @@ class MatrixImageFilter(img: Image, private val matrix: IntMatrix, offset: Int =
 		val filteredImg = WritableImage(pixelReader, img.width.toInt(), img.height.toInt())
 		val pixelWriter = filteredImg.pixelWriter
 
-		for (pixel in pixels) {
-
-			val color = filterPixel(pixel, pixelReader)
-			pixelWriter.setColor(pixel.x, pixel.y, color)
+		pixels.parallelStream().forEach {
+			val color = filterPixel(it, pixelReader)
+			pixelWriter.setColor(it.x, it.y, color)
 		}
 
 		return filteredImg

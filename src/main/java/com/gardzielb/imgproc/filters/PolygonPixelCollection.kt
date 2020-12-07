@@ -22,5 +22,13 @@ class PolygonPixelCollection(polygon: Polygon) : PixelCollection {
 		}
 	}
 
+	override val size get() = pixels.size
+
+	override fun contains(element: Pixel) = pixels.contains(element)
+
+	override fun containsAll(elements: Collection<Pixel>) = pixels.containsAll(elements)
+
+	override fun isEmpty() = pixels.isEmpty()
+
 	override fun iterator(): Iterator<Pixel> = pixels.iterator()
 }

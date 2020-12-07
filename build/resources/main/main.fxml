@@ -17,7 +17,7 @@
 		</Menu>
 	</MenuBar>
 
-	<HBox spacing="10.0" alignment="CENTER">
+	<HBox spacing="10.0" alignment="CENTER" fx:id="rootPane">
 
 		<ScrollPane prefWidth="800" prefHeight="800">
 			<Group fx:id="imgGroup">

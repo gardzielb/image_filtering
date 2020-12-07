@@ -16,6 +16,14 @@ class CircleBrushPixelCollection(private val imgWidth: Int, private val imgHeigh
 
 	override fun iterator(): Iterator<Pixel> = pixels.iterator()
 
+	override val size get() = pixels.size
+
+	override fun contains(element: Pixel) = pixels.contains(element)
+
+	override fun containsAll(elements: Collection<Pixel>) = pixels.containsAll(elements)
+
+	override fun isEmpty() = pixels.isEmpty()
+
 	// adds pixels to the collection following the rules:
 	// 1) every pixel from the bounding box of a circle given by 'center' and 'radius' is considered
 	// 2) only pixels inside the circle are added
