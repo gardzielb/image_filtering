@@ -12,8 +12,9 @@
 	  fx:controller="com.gardzielb.MainController">
 
 	<MenuBar>
-		<Menu text="File">
+		<Menu text="Image">
 			<MenuItem text="Open" onAction="#loadImage" fx:id="loadImageAction"/>
+			<MenuItem text="Create" onAction="#createImage"/>
 		</Menu>
 	</MenuBar>
 
@@ -76,7 +77,7 @@
 					</RadioButton>
 
 					<Slider GridPane.rowIndex="2" GridPane.columnIndex="0" GridPane.columnSpan="4"
-							fx:id="brushRadiusSlider" min="10" max="200" />
+							fx:id="brushRadiusSlider" min="10" max="200"/>
 
 					<Label GridPane.rowIndex="2" GridPane.columnIndex="4" GridPane.columnSpan="1"
 						   fx:id="brushRadiusLabel"/>

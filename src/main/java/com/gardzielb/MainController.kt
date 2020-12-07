@@ -1,21 +1,21 @@
 package com.gardzielb
 
-import com.gardzielb.imgproc.*
+import com.gardzielb.imgproc.IntMatrix
 import com.gardzielb.imgproc.filters.*
 import com.gardzielb.imgproc.histogram.ChartHistogramPresenter
 import com.gardzielb.imgproc.histogram.HistogramPresenter
-import com.gardzielb.ui.state.FilterStateMachine
+import com.gardzielb.ui.FileImageGenerator
+import com.gardzielb.ui.HsvClockImageGenerator
 import com.gardzielb.ui.ImageController
-import com.gardzielb.ui.state.NullFilteringState
-import com.gardzielb.ui.state.CircleBrushFilterStateBuilder
-import com.gardzielb.ui.state.EntireImageFilterStateBuilder
-import com.gardzielb.ui.state.PolygonSelectionFilterStateBuilder
+import com.gardzielb.ui.ImageGenerator
+import com.gardzielb.ui.state.*
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.fxml.Initializable
 import javafx.scene.Group
 import javafx.scene.chart.AreaChart
 import javafx.scene.control.*
+import javafx.scene.image.Image
 import javafx.scene.image.ImageView
 import javafx.scene.input.KeyCode
 import javafx.scene.input.KeyCodeCombination
@@ -23,13 +23,14 @@ import javafx.scene.input.KeyCombination
 import javafx.scene.layout.GridPane
 import javafx.scene.layout.VBox
 import javafx.stage.FileChooser
-import java.io.File
 import java.net.URL
 import java.util.*
 import kotlin.math.round
 
 const val customMatrixRows = 3
 const val customMatrixColumns = 3
+const val imgFrameWidth = 790.0
+const val imgFrameHeight = 790.0
 
 // UI controller
 class MainController : Initializable {
@@ -39,8 +40,8 @@ class MainController : Initializable {
 	private val filterData = FilterData(FilterType.IDENTITY, FilterRange.IMAGE)
 	private val buildFilterStateChain = EntireImageFilterStateBuilder()
 	private lateinit var histogramPresenter: HistogramPresenter
-	private var imgFile: File? = null
 	private val customMatrixSpinners = MutableList(0) { Spinner<Int>() }
+	private var imgGenerator: ImageGenerator = HsvClockImageGenerator(frameSize = 30.0, radius = 60.0, count = 12)
 
 	override fun initialize(location: URL?, resources: ResourceBundle?) {
 
@@ -66,6 +67,12 @@ class MainController : Initializable {
 	}
 
 	@FXML
+	private fun createImage() {
+		imgGenerator = HsvClockImageGenerator(frameSize = 30.0, radius = 60.0, count = 12)
+		setImage(imgGenerator.createImage(imgFrameWidth, imgFrameHeight))
+	}
+
+	@FXML
 	private fun loadImage() {
 
 		val fileChooser = FileChooser()
@@ -76,23 +83,22 @@ class MainController : Initializable {
 				FileChooser.ExtensionFilter("BMP Files", "*.bmp"),
 		)
 
-		imgFile = fileChooser.showOpenDialog(null)
+		val imgFile = fileChooser.showOpenDialog(null)
 		imgFile?.let {
-			loadImgFromFile(it)
-			filterPanel!!.isDisable = false
+			imgGenerator = FileImageGenerator(it)
+			setImage(imgGenerator.createImage(imgFrameWidth, imgFrameHeight))
 		}
 	}
 
 	@FXML
-	private fun reset() = imgFile?.let { loadImgFromFile(it) }
+	private fun reset() = setImage(imgGenerator.createImage(imgFrameWidth, imgFrameHeight))
 
-	private fun loadImgFromFile(file: File) {
+	private fun setImage(img: Image) {
 
-		val img = loadScaledImage(file, 800.0, 800.0)
 		imageController.updateImage(img)
-
 		filterData.img = img
 		filterMachine.state = buildFilterStateChain.buildState(filterData, imageController)
+		filterPanel!!.isDisable = false
 	}
 
 	private fun createCustomFilter(): ImageFilter {
@@ -110,7 +116,7 @@ class MainController : Initializable {
 		return MatrixImageFilter(filterData.img!!, IntMatrix(array), offsetSpinner!!.value, factor)
 	}
 
-	// ---------------------------------------- UI SETUP ----------------------------------------
+// ---------------------------------------- UI SETUP ----------------------------------------
 
 	private fun setupFilterTypeButton(button: RadioButton, type: FilterType) {
 
